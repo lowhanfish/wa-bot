@@ -1,25 +1,47 @@
-const wppconnect = require('@wppconnect-team/wppconnect');
+const express = require('express')
+const bodyParser = require('body-parser')
 
-wppconnect.create({
-    session: 'session1',
-    catchQR: (qr, asciiQR) => {
-        console.log('Scan QR berikut:')
-        console.log(asciiQR)
-    },
-    statusFind: (statusSession) => {
-        console.log('Status:', statusSession)
-    },
-    headless: true
+const {
+    startSession,
+    sendMessage,
+    logoutSession
+} = require('./whatsapp')
+
+const app = express()
+app.use(bodyParser.json())
+
+// ✅ 1. Start session (scan QR)
+app.get('/start', async (req, res) => {
+    try {
+        const result = await startSession()
+        res.json(result)
+    } catch (err) {
+        res.status(500).json({ error: err.message })
+    }
 })
-.then((client) => start(client))
-.catch((error) => console.log(error));
 
-function start(client) {
-    console.log("✅ WhatsApp ready")
+// ✅ 2. Send message
+app.post('/send', async (req, res) => {
+    try {
+        const { number, message } = req.body
 
-    client.onMessage((message) => {
-        console.log("Pesan masuk:", message.body)
+        const result = await sendMessage(number, message)
+        res.json(result)
+    } catch (err) {
+        res.status(500).json({ error: err.message })
+    }
+})
 
-        client.sendText(message.from, 'Halo! ini dari bot 🚀')
-    });
-}
+// ✅ 3. Logout (hapus session)
+app.get('/logout', async (req, res) => {
+    try {
+        const result = await logoutSession()
+        res.json(result)
+    } catch (err) {
+        res.status(500).json({ error: err.message })
+    }
+})
+
+app.listen(3000, () => {
+    console.log("🚀 Server running di http://localhost:3000")
+})
