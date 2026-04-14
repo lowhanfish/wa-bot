@@ -1,0 +1,80 @@
+2026/04/14-23:05:23.971 d3b05 Reusing MANIFEST /Users/dinaskominfo/kiken/Project/Node/wa-bot/tokens/session1/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2026/04/14-23:05:23.972 d3b05 Recovering log #3015
+2026/04/14-23:05:23.977 d3b05 Reusing old log /Users/dinaskominfo/kiken/Project/Node/wa-bot/tokens/session1/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/003015.log 
+2026/04/14-23:05:26.564 d3b13 Compacting 1@1 + 10@2 files
+2026/04/14-23:05:26.607 d3b13 Generated table #3045@1: 23187 keys, 2270423 bytes
+2026/04/14-23:05:26.642 d3b13 Generated table #3046@1: 16496 keys, 2272802 bytes
+2026/04/14-23:05:26.658 d3b13 Generated table #3047@1: 13063 keys, 2144324 bytes
+2026/04/14-23:05:26.677 d3b13 Generated table #3048@1: 11427 keys, 2164056 bytes
+2026/04/14-23:05:26.693 d3b13 Generated table #3049@1: 4910 keys, 2122953 bytes
+2026/04/14-23:05:26.710 d3b13 Generated table #3050@1: 5163 keys, 2124443 bytes
+2026/04/14-23:05:26.730 d3b13 Generated table #3051@1: 4362 keys, 2125165 bytes
+2026/04/14-23:05:26.745 d3b13 Generated table #3052@1: 4034 keys, 2122968 bytes
+2026/04/14-23:05:26.761 d3b13 Generated table #3053@1: 8287 keys, 2128916 bytes
+2026/04/14-23:05:26.799 d3b13 Generated table #3054@1: 113099 keys, 2266949 bytes
+2026/04/14-23:05:26.799 d3b13 Compacted 1@1 + 10@2 files => 21742999 bytes
+2026/04/14-23:05:26.802 d3b13 compacted to: files[ 0 1 50 14 0 0 0 ]
+2026/04/14-23:05:26.802 d3b13 Delete type=2 #3019
+2026/04/14-23:05:26.802 d3b13 Delete type=2 #2992
+2026/04/14-23:05:26.802 d3b13 Delete type=2 #2987
+2026/04/14-23:05:26.802 d3b13 Delete type=2 #2993
+2026/04/14-23:05:26.802 d3b13 Delete type=2 #2991
+2026/04/14-23:05:26.802 d3b13 Delete type=2 #2990
+2026/04/14-23:05:26.802 d3b13 Delete type=2 #2994
+2026/04/14-23:05:26.802 d3b13 Delete type=2 #2995
+2026/04/14-23:05:26.802 d3b13 Delete type=2 #2996
+2026/04/14-23:05:26.802 d3b13 Delete type=2 #2989
+2026/04/14-23:05:26.802 d3b13 Delete type=2 #2988
+2026/04/14-23:05:27.113 d3b08 Compacting 1@1 + 1@2 files
+2026/04/14-23:05:27.147 d3b08 Generated table #3055@1: 64699 keys, 1789919 bytes
+2026/04/14-23:05:27.147 d3b08 Compacted 1@1 + 1@2 files => 1789919 bytes
+2026/04/14-23:05:27.149 d3b08 compacted to: files[ 0 0 50 14 0 0 0 ]
+2026/04/14-23:05:36.898 d3b08 Level-0 table #3057: started
+2026/04/14-23:05:36.919 d3b08 Level-0 table #3057: 1111977 bytes OK
+2026/04/14-23:05:36.920 d3b08 Delete type=2 #3021
+2026/04/14-23:05:36.920 d3b08 Delete type=0 #3015
+2026/04/14-23:05:36.921 d3b08 Delete type=2 #3004
+2026/04/14-23:05:36.936 d3b08 Compacting 1@0 + 0@1 files
+2026/04/14-23:05:36.949 d3b08 Generated table #3058@0: 30762 keys, 534460 bytes
+2026/04/14-23:05:36.950 d3b08 Generated table #3059@0: 16 keys, 2731 bytes
+2026/04/14-23:05:36.951 d3b08 Generated table #3060@0: 57 keys, 6464 bytes
+2026/04/14-23:05:36.954 d3b08 Generated table #3061@0: 171 keys, 3308 bytes
+2026/04/14-23:05:36.955 d3b08 Generated table #3062@0: 190 keys, 19195 bytes
+2026/04/14-23:05:36.955 d3b08 Compacted 1@0 + 0@1 files => 566158 bytes
+2026/04/14-23:05:36.957 d3b08 compacted to: files[ 0 5 50 14 0 0 0 ]
+2026/04/14-23:05:36.957 d3b08 Delete type=2 #3057
+2026/04/14-23:05:37.646 d3b08 Moved #3058 to level-2 534460 bytes OK: files[ 0 4 51 14 0 0 0 ]
+2026/04/14-23:05:37.648 d3b08 Compacting 1@2 + 3@3 files
+2026/04/14-23:05:37.694 d3b08 Generated table #3063@2: 89332 keys, 2241395 bytes
+2026/04/14-23:05:37.723 d3b08 Generated table #3064@2: 65994 keys, 2272620 bytes
+2026/04/14-23:05:37.740 d3b08 Generated table #3065@2: 21565 keys, 974835 bytes
+2026/04/14-23:05:37.740 d3b08 Compacted 1@2 + 3@3 files => 5488850 bytes
+2026/04/14-23:05:37.744 d3b08 compacted to: files[ 0 4 50 14 0 0 0 ]
+2026/04/14-23:05:37.744 d3b08 Delete type=2 #3033
+2026/04/14-23:05:37.744 d3b08 Delete type=2 #3032
+2026/04/14-23:05:37.744 d3b08 Delete type=2 #3031
+2026/04/14-23:05:37.744 d3b08 Delete type=2 #3058
+2026/04/14-23:06:56.612 d3b08 Compacting 1@1 + 10@2 files
+2026/04/14-23:06:56.650 d3b08 Generated table #3066@1: 98173 keys, 2247770 bytes
+2026/04/14-23:06:56.683 d3b08 Generated table #3067@1: 97861 keys, 2247539 bytes
+2026/04/14-23:06:56.713 d3b08 Generated table #3068@1: 97813 keys, 2246912 bytes
+2026/04/14-23:06:56.745 d3b08 Generated table #3069@1: 99440 keys, 2247360 bytes
+2026/04/14-23:06:56.776 d3b08 Generated table #3070@1: 98680 keys, 2248072 bytes
+2026/04/14-23:06:56.806 d3b08 Generated table #3071@1: 97813 keys, 2246000 bytes
+2026/04/14-23:06:56.835 d3b08 Generated table #3072@1: 98363 keys, 2248657 bytes
+2026/04/14-23:06:56.867 d3b08 Generated table #3073@1: 98971 keys, 2247850 bytes
+2026/04/14-23:06:56.900 d3b08 Generated table #3074@1: 98768 keys, 2248875 bytes
+2026/04/14-23:06:56.913 d3b08 Generated table #3075@1: 34386 keys, 798270 bytes
+2026/04/14-23:06:56.913 d3b08 Compacted 1@1 + 10@2 files => 21027305 bytes
+2026/04/14-23:06:56.916 d3b08 compacted to: files[ 0 3 50 14 0 0 0 ]
+2026/04/14-23:06:56.916 d3b08 Delete type=2 #3035
+2026/04/14-23:06:56.917 d3b08 Delete type=2 #3034
+2026/04/14-23:06:56.917 d3b08 Delete type=2 #3036
+2026/04/14-23:06:56.917 d3b08 Delete type=2 #3037
+2026/04/14-23:06:56.917 d3b08 Delete type=2 #3042
+2026/04/14-23:06:56.917 d3b08 Delete type=2 #3043
+2026/04/14-23:06:56.917 d3b08 Delete type=2 #3041
+2026/04/14-23:06:56.917 d3b08 Delete type=2 #3040
+2026/04/14-23:06:56.917 d3b08 Delete type=2 #3061
+2026/04/14-23:06:56.917 d3b08 Delete type=2 #3039
+2026/04/14-23:06:56.917 d3b08 Delete type=2 #3038
