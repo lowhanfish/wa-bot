@@ -23,7 +23,7 @@ async function callToto(message) {
 
   const payload = {
     // session_id: null,
-    session_id: "93d788d2-64ef-4141-aa3a-8e3089bd618f",
+    session_id: "e22cdad5-e20e-4500-9407-74dfee269109",
     role: 'user',
     model: process.env.TOTO_MODEL || 'qwen2.5:7b',
     content: String(message || ''),
