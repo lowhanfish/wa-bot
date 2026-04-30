@@ -5,6 +5,7 @@ const callToto = require('./services/callToto');
 
 
 
+
 let client = null;
 let currentQR = {
   text: null,

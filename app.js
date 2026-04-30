@@ -1,4 +1,22 @@
 require('dotenv').config();
+const getToken = require('./services/getToken');
+
+global.myVar = ""
+
+const Token = async() => {
+  console.log("================")
+    const token = await getToken.getToken()
+    global.myVar = token.access_token;
+    console.log(token.access_token)
+    console.log("================")
+}
+
+setInterval(() => {
+  Token()
+}, 25 * 60 * 1000); // 25 menit
+// }, 1000); // 25 menit
+Token()
+
 
 const express = require('express');
 const QRCode = require('qrcode');
@@ -106,6 +124,12 @@ app.get('/logout', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+
+app.post('/check', (req, res)=>{
+  console.log(req.body);
+  res.status(200).send(req.body);
+})
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);

@@ -23,7 +23,7 @@ async function callToto(message) {
 
   const payload = {
     // session_id: null,
-    session_id: "e22cdad5-e20e-4500-9407-74dfee269109",
+    session_id: "e65a8c88-0688-4fc5-817c-f89145ed9f21",
     role: 'user',
     model: process.env.TOTO_MODEL || 'qwen2.5:7b',
     content: String(message || ''),
@@ -35,10 +35,13 @@ async function callToto(message) {
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${global.myVar}`,
     },
     body: JSON.stringify(payload),
   });
+
+
+  console.log(res)
 
   if (!res.ok) {
     const bodyText = await res.text().catch(() => '');

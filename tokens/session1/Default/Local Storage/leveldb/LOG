@@ -1,6 +1,9 @@
-2026/04/15-20:40:07.806 12493f Reusing MANIFEST /Users/dinaskominfo/kiken/Project/Node/wa-bot/tokens/session1/Default/Local Storage/leveldb/MANIFEST-000001
-2026/04/15-20:40:07.808 12493f Recovering log #3
-2026/04/15-20:40:07.809 12493f Reusing old log /Users/dinaskominfo/kiken/Project/Node/wa-bot/tokens/session1/Default/Local Storage/leveldb/000003.log 
-2026/04/15-20:42:08.833 12493f Level-0 table #5: started
-2026/04/15-20:42:08.845 12493f Level-0 table #5: 19258 bytes OK
-2026/04/15-20:42:08.872 12493f Delete type=0 #3
+2026/04/30-23:20:09.852 4d4ec5 Reusing MANIFEST /Users/dinaskominfo/kiken/Project/Node/wa-bot/tokens/session1/Default/Local Storage/leveldb/MANIFEST-000001
+2026/04/30-23:20:09.854 4d4ec5 Recovering log #20
+2026/04/30-23:20:09.854 4d4ec5 Reusing old log /Users/dinaskominfo/kiken/Project/Node/wa-bot/tokens/session1/Default/Local Storage/leveldb/000020.log 
+2026/04/30-23:24:11.142 4d4ec9 Level-0 table #24: started
+2026/04/30-23:24:11.148 4d4ec9 Level-0 table #24: 12545 bytes OK
+2026/04/30-23:24:11.153 4d4ec9 Delete type=0 #20
+2026/05/01-07:24:33.416 4d4ec9 Level-0 table #26: started
+2026/05/01-07:24:33.427 4d4ec9 Level-0 table #26: 12412 bytes OK
+2026/05/01-07:24:33.432 4d4ec9 Delete type=0 #23
