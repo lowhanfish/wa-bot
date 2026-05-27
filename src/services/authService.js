@@ -15,22 +15,52 @@ let tokenData = {
 export const loginToAI = async () => {
    try {
       console.log('🔐 Logging in to AI-RAG...')
+      console.log(`📍 URL: ${env.aiRagBaseUrl}/api/v1/auth/login`)
       
+      if (!env.aiUsername || !env.aiPassword) {
+         return {
+            success: false,
+            error: 'Missing USERNAME/PASSWORD for AI-RAG login (env.aiUsername/env.aiPassword is empty)'
+         }
+      }
+
+      const form = new URLSearchParams({
+         grant_type: env.aiGrantType,
+         username: env.aiUsername,
+         password: env.aiPassword,
+         scope: env.aiScope,
+         client_id: env.aiClientId,
+         client_secret: env.aiClientSecret || ''
+      })
+
       const response = await fetch(`${env.aiRagBaseUrl}/api/v1/auth/login`, {
          method: 'POST',
          headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/x-www-form-urlencoded'
          },
-         body: JSON.stringify({
-            username: env.aiUsername,
-            password: env.aiPassword
-         })
+         body: form.toString()
       })
 
-      const data = await response.json()
+      const contentType = response.headers.get('content-type') || ''
+      const raw = await response.text()
+
+      let data = null
+      if (contentType.includes('application/json')) {
+         try {
+            data = JSON.parse(raw)
+         } catch (e) {
+            data = { parseError: true, raw }
+         }
+      } else {
+         data = { nonJson: true, raw }
+      }
 
       if (!response.ok) {
-         console.error('❌ Login failed:', data)
+         console.error('❌ Login failed:')
+         console.error('Status:', response.status)
+         console.error('Content-Type:', contentType)
+         console.error('Response:', data && typeof data === 'object' ? data : raw)
+
          return {
             success: false,
             error: data
@@ -54,7 +84,19 @@ export const loginToAI = async () => {
          data: tokenData
       }
    } catch (error) {
-      console.error('❌ Login error:', error.message)
+      console.error('❌ LOGIN ERROR ❌')
+      console.error('Error Type:', error.name)
+      console.error('Error Message:', error.message)
+      console.error('Error Stack:', error.stack)
+      
+      if (error.message.includes('ECONNREFUSED')) {
+         console.error('⚠️ CONNECTION REFUSED - Pastikan server AI-RAG sudah running di:', env.aiRagBaseUrl)
+      } else if (error.message.includes('ENOTFOUND')) {
+         console.error('⚠️ HOST NOT FOUND - URL AI-RAG tidak valid:', env.aiRagBaseUrl)
+      } else if (error.message.includes('ETIMEDOUT')) {
+         console.error('⚠️ CONNECTION TIMEOUT - Server AI-RAG tidak merespons')
+      }
+      
       return {
          success: false,
          error: error.message
@@ -77,6 +119,7 @@ export const refreshAccessToken = async () => {
       }
 
       console.log('🔄 Refreshing access token...')
+      console.log(`📍 URL: ${env.aiRagBaseUrl}/api/v1/auth/refresh`)
 
       const response = await fetch(
          `${env.aiRagBaseUrl}/api/v1/auth/refresh?refresh_token=${tokenData.refreshToken}`,
@@ -91,7 +134,9 @@ export const refreshAccessToken = async () => {
       const data = await response.json()
 
       if (!response.ok) {
-         console.error('❌ Token refresh failed:', data)
+         console.error('❌ Token refresh failed:')
+         console.error('Status:', response.status)
+         console.error('Response:', data)
          return {
             success: false,
             error: data
@@ -111,7 +156,17 @@ export const refreshAccessToken = async () => {
          data: tokenData
       }
    } catch (error) {
-      console.error('❌ Refresh token error:', error.message)
+      console.error('❌ REFRESH TOKEN ERROR ❌')
+      console.error('Error Type:', error.name)
+      console.error('Error Message:', error.message)
+      console.error('Error Stack:', error.stack)
+      
+      if (error.message.includes('ECONNREFUSED')) {
+         console.error('⚠️ CONNECTION REFUSED - Pastikan server AI-RAG sudah running')
+      } else if (error.message.includes('ENOTFOUND')) {
+         console.error('⚠️ HOST NOT FOUND - URL AI-RAG tidak valid:', env.aiRagBaseUrl)
+      }
+      
       return {
          success: false,
          error: error.message
@@ -137,13 +192,17 @@ export const isTokenExpired = () => {
  */
 export const getValidAccessToken = async () => {
    try {
+      console.log('\n🔍 === CHECKING TOKEN STATUS ===')
+      
       // Jika belum pernah login, login dulu
       if (!tokenData.accessToken) {
          console.log('📌 No token found, performing initial login...')
          const loginResult = await loginToAI()
          if (!loginResult.success) {
-            throw new Error('Login failed: ' + loginResult.error)
+            console.error('❌ Initial login failed')
+            throw new Error('Login failed: ' + JSON.stringify(loginResult.error))
          }
+         console.log('✅ Initial login successful')
          return tokenData.accessToken
       }
 
@@ -156,14 +215,20 @@ export const getValidAccessToken = async () => {
             console.log('📌 Refresh failed, logging in again...')
             const loginResult = await loginToAI()
             if (!loginResult.success) {
-               throw new Error('Login failed: ' + loginResult.error)
+               console.error('❌ Login failed after refresh failure')
+               throw new Error('Login failed: ' + JSON.stringify(loginResult.error))
             }
+            console.log('✅ Login successful after refresh failure')
          }
+      } else {
+         console.log('✅ Token is still valid')
       }
 
       return tokenData.accessToken
    } catch (error) {
-      console.error('❌ Error getting valid token:', error.message)
+      console.error('❌ ERROR GETTING VALID TOKEN ❌')
+      console.error('Error Message:', error.message)
+      console.error('Error Stack:', error.stack)
       throw error
    }
 }

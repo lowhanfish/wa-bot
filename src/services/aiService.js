@@ -15,12 +15,13 @@ export const askAI = async (phoneNumber, question) => {
       console.log('Question:', question)
 
       // 1. Dapatkan access token (auto-refresh jika expired)
+      console.log('\n🔐 Getting valid access token...')
       const accessToken = await authService.getValidAccessToken()
       console.log('✅ Got valid access token')
 
       // 2. Dapatkan session_id untuk nomor ini
       const sessionId = sessionService.getSessionId(phoneNumber)
-      console.log('Session ID:', sessionId || 'null (first question)')
+      console.log('📝 Session ID:', sessionId || 'null (first question)')
 
       // 3. Kirim pertanyaan ke AI-RAG
       const payload = {
@@ -31,8 +32,9 @@ export const askAI = async (phoneNumber, question) => {
          stream: false
       }
 
-      console.log('📤 Sending request to AI-RAG...')
+      console.log('\n📤 Sending request to AI-RAG...')
       console.log('URL:', `${env.aiRagBaseUrl}/api/v1/chat/ask`)
+      console.log('Payload:', JSON.stringify(payload, null, 2))
 
       const response = await fetch(`${env.aiRagBaseUrl}/api/v1/chat/ask`, {
          method: 'POST',
@@ -46,7 +48,9 @@ export const askAI = async (phoneNumber, question) => {
       const data = await response.json()
 
       if (!response.ok) {
-         console.error('❌ AI request failed:', data)
+         console.error('\n❌ AI REQUEST FAILED ❌')
+         console.error('Status Code:', response.status)
+         console.error('Response:', JSON.stringify(data, null, 2))
          return {
             success: false,
             error: data,
@@ -55,9 +59,10 @@ export const askAI = async (phoneNumber, question) => {
          }
       }
 
-      console.log('✅ AI response received')
+      console.log('\n✅ AI response received')
       console.log('Response model:', data.model)
       console.log('Response session_id:', data.session_id)
+      console.log('Response content length:', data.content.length, 'characters')
 
       // 4. Simpan session_id baru untuk pertanyaan berikutnya
       sessionService.saveSessionId(phoneNumber, data.session_id)
@@ -72,8 +77,20 @@ export const askAI = async (phoneNumber, question) => {
          error: null
       }
    } catch (error) {
-      console.error('❌ Error asking AI:', error.message)
-      console.error('Error stack:', error.stack)
+      console.error('\n❌ ERROR ASKING AI ❌')
+      console.error('Error Type:', error.name)
+      console.error('Error Message:', error.message)
+      console.error('Error Stack:', error.stack)
+      
+      if (error.message.includes('ECONNREFUSED')) {
+         console.error('⚠️ CONNECTION REFUSED - Server AI-RAG tidak running')
+         console.error('📍 Pastikan server AI-RAG berjalan di:', env.aiRagBaseUrl)
+      } else if (error.message.includes('ENOTFOUND')) {
+         console.error('⚠️ HOST NOT FOUND - URL tidak valid:', env.aiRagBaseUrl)
+      } else if (error.message.includes('ETIMEDOUT')) {
+         console.error('⚠️ CONNECTION TIMEOUT - Server tidak merespons')
+      }
+      
       return {
          success: false,
          error: error.message,

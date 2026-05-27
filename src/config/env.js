@@ -13,5 +13,11 @@ export default {
    // AI-RAG Config
    aiRagBaseUrl: 'http://121.52.72.109:8000',
    aiUsername: process.env.USERNAME,
-   aiPassword: process.env.PASSWORD
+   aiPassword: process.env.PASSWORD,
+
+   // AI-RAG Login (matches Swagger/curl)
+   aiGrantType: process.env.AI_GRANT_TYPE || 'password',
+   aiScope: process.env.AI_SCOPE || '',
+   aiClientId: process.env.AI_CLIENT_ID || 'string',
+   aiClientSecret: process.env.AI_CLIENT_SECRET
 }
