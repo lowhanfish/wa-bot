@@ -1,6 +1,7 @@
 import crypto from 'crypto'
 
 import env from '../../config/env.js'
+import * as aiService from '../../services/aiService.js'
 
 export const verifyWebhook = (req) => {
 
@@ -124,9 +125,9 @@ export const processWebhook = async (body) => {
    }
 
    try {
-      body.entry.forEach((entry) => {
+      body.entry.forEach(async (entry) => {
 
-         entry.changes.forEach((change) => {
+         entry.changes.forEach(async (change) => {
 
             const value = change.value
 
@@ -151,14 +152,33 @@ export const processWebhook = async (body) => {
 
                if (message.type === 'text') {
 
-                  console.log(
-                     'Pesan:',
-                     message.text.body
-                  )
+                  const userMessage = message.text.body
+                  console.log('Pesan:', userMessage)
 
-                  // 🤖 AUTO-REPLY
-                  const autoReplyMessage = 'Halo ada yang bisa saya bantu'
-                  sendMessage(from, autoReplyMessage)
+                  // 🤖 KIRIM KE AI-RAG
+                  console.log('\n⏳ Processing message with AI...')
+                  const aiResponse = await aiService.askAI(from, userMessage)
+
+                  if (aiResponse.success) {
+                     console.log('\n✅ AI Response received:')
+                     console.log(aiResponse.content)
+
+                     // 📤 KIRIM JAWABAN AI KE WHATSAPP
+                     console.log('\n📤 Sending AI response back to WhatsApp...')
+                     const sendResult = await sendMessage(from, aiResponse.content)
+
+                     if (sendResult.success) {
+                        console.log('\n✅ AI Response sent successfully to user!')
+                     } else {
+                        console.error('\n❌ Failed to send AI response to user')
+                     }
+                  } else {
+                     console.error('\n❌ AI Request failed:', aiResponse.error)
+
+                     // Kirim pesan error ke user
+                     const errorMessage = '❌ Maaf, terjadi kesalahan saat memproses pertanyaan. Silakan coba lagi.'
+                     await sendMessage(from, errorMessage)
+                  }
 
                }
 
