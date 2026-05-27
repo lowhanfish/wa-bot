@@ -11,7 +11,8 @@ export default {
    phoneNumberId: process.env.PHONE_NUMBER_ID,
    
    // AI-RAG Config
-   aiRagBaseUrl: 'http://121.52.72.109:8000',
+   // aiRagBaseUrl: 'http://121.52.72.109:8000',
+   aiRagBaseUrl: 'http://10.10.20.40:8000',
    aiUsername: process.env.USERNAME,
    aiPassword: process.env.PASSWORD,
 
