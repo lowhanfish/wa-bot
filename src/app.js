@@ -1,19 +1,13 @@
-
-import 'dotenv/config'
 import express from 'express'
+import whatsappRoute from './modules/whatsapp/whatsapp.route.js'
 
-const app = express();
-app.use(express.json());
+const app = express()
 
-import globalSimpeg from './routes/index.js'
-app.use('/api',globalSimpeg)
+app.use(express.json())
+app.use('/whatsapp', whatsappRoute)
 
-
-const port = process.env.PORT
-app.listen(port, ()=>{
-    console.log(`Server running on port ${port}`)
+app.get("/", (req, res)=>{
+    res.send("Server Active")
 })
 
-
-
-
+export default app
