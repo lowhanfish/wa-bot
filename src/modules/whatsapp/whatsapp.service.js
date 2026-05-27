@@ -94,14 +94,19 @@ export const sendMessage = async (phoneNumber, messageText) => {
             data: result
          }
       } else {
-         console.error('❌ Gagal mengirim pesan:', result)
+         console.error('❌ Gagal mengirim pesan ke:', phoneNumber)
+         console.error('Status Code:', response.status)
+         console.error('Error Detail:', JSON.stringify(result, null, 2))
          return {
             success: false,
             error: result
          }
       }
    } catch (error) {
-      console.error('❌ Error mengirim pesan:', error)
+      console.error('❌ ERROR MENGIRIM PESAN ❌')
+      console.error('Phone Number:', phoneNumber)
+      console.error('Error Message:', error.message)
+      console.error('Error Stack:', error.stack)
       return {
          success: false,
          error: error.message
@@ -118,48 +123,55 @@ export const processWebhook = async (body) => {
       return
    }
 
-   body.entry.forEach((entry) => {
+   try {
+      body.entry.forEach((entry) => {
 
-      entry.changes.forEach((change) => {
+         entry.changes.forEach((change) => {
 
-         const value = change.value
+            const value = change.value
 
-         if (
-            value.messages &&
-            value.messages[0]
-         ) {
+            if (
+               value.messages &&
+               value.messages[0]
+            ) {
 
-            const message = value.messages[0]
+               const message = value.messages[0]
 
-            const contact =
-               value.contacts?.[0]
+               const contact =
+                  value.contacts?.[0]
 
-            const senderName =
-               contact?.profile?.name
+               const senderName =
+                  contact?.profile?.name
 
-            const from = message.from
+               const from = message.from
 
-            console.log('\n=== 📨 PESAN MASUK ===')
-            console.log('Nama:', senderName)
-            console.log('Nomor:', from)
+               console.log('\n=== 📨 PESAN MASUK ===')
+               console.log('Nama:', senderName)
+               console.log('Nomor:', from)
 
-            if (message.type === 'text') {
+               if (message.type === 'text') {
 
-               console.log(
-                  'Pesan:',
-                  message.text.body
-               )
+                  console.log(
+                     'Pesan:',
+                     message.text.body
+                  )
 
-               // 🤖 AUTO-REPLY
-               const autoReplyMessage = 'Hy ada yang bisa saya bantu?'
-               sendMessage(from, autoReplyMessage)
+                  // 🤖 AUTO-REPLY
+                  const autoReplyMessage = 'Halo ada yang bisa saya bantu'
+                  sendMessage(from, autoReplyMessage)
+
+               }
 
             }
 
-         }
+         })
 
       })
-
-   })
+   } catch (error) {
+      console.error('\n❌ ERROR PROCESS WEBHOOK ❌')
+      console.error('Error Message:', error.message)
+      console.error('Error Stack:', error.stack)
+      console.error('Full Error:', error)
+   }
 
 }
