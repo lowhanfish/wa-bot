@@ -62,7 +62,54 @@ export const verifySignature = (req) => {
    )
 }
 
-export const processWebhook = (body) => {
+// Fungsi untuk mengirim pesan WhatsApp
+export const sendMessage = async (phoneNumber, messageText) => {
+   try {
+      const url = `https://graph.facebook.com/v25.0/${env.phoneNumberId}/messages`
+      
+      const payload = {
+         messaging_product: 'whatsapp',
+         to: phoneNumber,
+         type: 'text',
+         text: {
+            body: messageText
+         }
+      }
+
+      const response = await fetch(url, {
+         method: 'POST',
+         headers: {
+            'Authorization': `Bearer ${env.akseToken}`,
+            'Content-Type': 'application/json'
+         },
+         body: JSON.stringify(payload)
+      })
+
+      const result = await response.json()
+
+      if (response.ok) {
+         console.log('✅ Pesan berhasil dikirim ke:', phoneNumber)
+         return {
+            success: true,
+            data: result
+         }
+      } else {
+         console.error('❌ Gagal mengirim pesan:', result)
+         return {
+            success: false,
+            error: result
+         }
+      }
+   } catch (error) {
+      console.error('❌ Error mengirim pesan:', error)
+      return {
+         success: false,
+         error: error.message
+      }
+   }
+}
+
+export const processWebhook = async (body) => {
 
    if (
       body.object !==
@@ -92,7 +139,7 @@ export const processWebhook = (body) => {
 
             const from = message.from
 
-            console.log('\nPesan Masuk')
+            console.log('\n=== 📨 PESAN MASUK ===')
             console.log('Nama:', senderName)
             console.log('Nomor:', from)
 
@@ -102,6 +149,10 @@ export const processWebhook = (body) => {
                   'Pesan:',
                   message.text.body
                )
+
+               // 🤖 AUTO-REPLY
+               const autoReplyMessage = 'Hy ada yang bisa saya bantu?'
+               sendMessage(from, autoReplyMessage)
 
             }
 
