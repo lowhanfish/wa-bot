@@ -1,11 +1,28 @@
-import { testService } from './whatsapp.service.js'
+import * as service from './whatsapp.service.js'
 
-export const testPost = async (req, res) => {
+export const verifyWebhook = (req, res) => {
 
-   const result = await testService(req.body)
+   const result = service.verifyWebhook(req)
 
-   res.json({
-      success: true,
-      data: result
-   })
+   if (result.success) {
+      return res
+         .status(200)
+         .send(result.challenge)
+   }
+
+   res.sendStatus(403)
+}
+
+export const receiveWebhook = (req, res) => {
+
+   const isValid =
+      service.verifySignature(req)
+
+   if (!isValid) {
+      return res.sendStatus(401)
+   }
+
+   service.processWebhook(req.body)
+
+   res.status(200).send('EVENT_RECEIVED')
 }

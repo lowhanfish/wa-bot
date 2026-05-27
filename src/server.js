@@ -5,7 +5,7 @@ import env from './config/env.js'
 app.listen(env.port, () => {
 
    console.log(
-      `${env.appName} running on port ${env.port}`
+      `Server running on port ${env.port}`
    )
 
 })

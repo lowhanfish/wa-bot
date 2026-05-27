@@ -1,10 +1,14 @@
 import { Router } from 'express'
 
-import { testPost } from './whatsapp.controller.js'
+import {
+   verifyWebhook,
+   receiveWebhook
+} from './whatsapp.controller.js'
 
 const router = Router()
 
-router.get('/test', testPost)
-router.post('/test', testPost)
+router.get('/webhook', verifyWebhook)
+
+router.post('/webhook', receiveWebhook)
 
 export default router
