@@ -1,31 +1,31 @@
-import env from '../config/env.js'
 import * as authService from './authService.js'
 import * as sessionService from './sessionService.js'
 
 /**
  * Kirim pertanyaan ke backend AI-RAG dan dapatkan jawaban
+ * @param {Object} tenantConfig - Konfigurasi tenant
  * @param {String} phoneNumber - Nomor WhatsApp pengirim
  * @param {String} question - Pertanyaan dari user
  * @returns {Object} {success, content, sessionId, error}
  */
-export const askAI = async (phoneNumber, question) => {
+export const askAI = async (tenantConfig, phoneNumber, question) => {
    try {
+      const tenantKey = tenantConfig?.tenantKey || 'default'
+
       console.log('\n🤖 === ASKING AI ===')
+      console.log('Tenant:', tenantKey)
       console.log('Phone:', phoneNumber)
       console.log('Question:', question)
 
-      // 1. Dapatkan access token (auto-refresh jika expired)
       console.log('\n🔐 Getting valid access token...')
-      const accessToken = await authService.getValidAccessToken()
+      const accessToken = await authService.getValidAccessToken(tenantConfig)
       console.log('✅ Got valid access token')
 
-      // 2. Dapatkan session_id untuk nomor ini
-      const sessionId = sessionService.getSessionId(phoneNumber)
+      const sessionId = sessionService.getSessionId(tenantKey, phoneNumber)
       console.log('📝 Session ID:', sessionId || 'null (first question)')
 
-      // 3. Kirim pertanyaan ke AI-RAG
       const payload = {
-         session_id: sessionId, // null untuk pertanyaan pertama
+         session_id: sessionId,
          role: 'user',
          model: 'qwen2.5:7b',
          content: question,
@@ -33,10 +33,10 @@ export const askAI = async (phoneNumber, question) => {
       }
 
       console.log('\n📤 Sending request to AI-RAG...')
-      console.log('URL:', `${env.aiRagBaseUrl}/api/v1/chat/ask`)
+      console.log('URL:', `${tenantConfig.aiRagBaseUrl}/api/v1/chat/ask`)
       console.log('Payload:', JSON.stringify(payload, null, 2))
 
-      const response = await fetch(`${env.aiRagBaseUrl}/api/v1/chat/ask`, {
+      const response = await fetch(`${tenantConfig.aiRagBaseUrl}/api/v1/chat/ask`, {
          method: 'POST',
          headers: {
             'Authorization': `Bearer ${accessToken}`,
@@ -64,10 +64,8 @@ export const askAI = async (phoneNumber, question) => {
       console.log('Response session_id:', data.session_id)
       console.log('Response content length:', data.content.length, 'characters')
 
-      // 4. Simpan session_id baru untuk pertanyaan berikutnya
-      sessionService.saveSessionId(phoneNumber, data.session_id)
+      sessionService.saveSessionId(tenantKey, phoneNumber, data.session_id)
 
-      // 5. Return jawaban
       return {
          success: true,
          content: data.content,
@@ -81,16 +79,16 @@ export const askAI = async (phoneNumber, question) => {
       console.error('Error Type:', error.name)
       console.error('Error Message:', error.message)
       console.error('Error Stack:', error.stack)
-      
+
       if (error.message.includes('ECONNREFUSED')) {
          console.error('⚠️ CONNECTION REFUSED - Server AI-RAG tidak running')
-         console.error('📍 Pastikan server AI-RAG berjalan di:', env.aiRagBaseUrl)
+         console.error('📍 Pastikan server AI-RAG berjalan di:', tenantConfig?.aiRagBaseUrl)
       } else if (error.message.includes('ENOTFOUND')) {
-         console.error('⚠️ HOST NOT FOUND - URL tidak valid:', env.aiRagBaseUrl)
+         console.error('⚠️ HOST NOT FOUND - URL tidak valid:', tenantConfig?.aiRagBaseUrl)
       } else if (error.message.includes('ETIMEDOUT')) {
          console.error('⚠️ CONNECTION TIMEOUT - Server tidak merespons')
       }
-      
+
       return {
          success: false,
          error: error.message,
@@ -100,31 +98,14 @@ export const askAI = async (phoneNumber, question) => {
    }
 }
 
-/**
- * Reset session untuk user tertentu
- * (jika user ingin memulai percakapan baru)
- * @param {String} phoneNumber
- */
-export const resetUserSession = (phoneNumber) => {
-   sessionService.deleteSessionId(phoneNumber)
-   console.log(`🔄 Session reset for ${phoneNumber}`)
+export const resetUserSession = (tenantKey, phoneNumber) => {
+   sessionService.deleteSessionId(tenantKey, phoneNumber)
+   console.log(`🔄 Session reset for ${tenantKey}:${phoneNumber}`)
 }
 
-/**
- * Get current auth status
- * @returns {Object}
- */
 export const getAuthStatus = () => {
-   const tokenData = authService.getTokenData()
-   const sessions = sessionService.getAllSessions()
-   
    return {
-      tokenData: {
-         hasAccessToken: !!tokenData.accessToken,
-         tokenExpiredIn: tokenData.expiresAt ? new Date(tokenData.expiresAt) : null,
-         isExpired: tokenData.isExpired
-      },
-      activeSessions: sessions,
-      totalActiveSessions: Object.keys(sessions).length
+      activeSessions: sessionService.getAllSessions(),
+      totalActiveSessions: Object.keys(sessionService.getAllSessions()).length
    }
 }

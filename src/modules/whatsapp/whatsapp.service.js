@@ -2,6 +2,7 @@ import crypto from 'crypto'
 
 import env from '../../config/env.js'
 import * as aiService from '../../services/aiService.js'
+import { resolveTenantConfig } from '../../services/tenantService.js'
 
 export const verifyWebhook = (req) => {
 
@@ -63,11 +64,10 @@ export const verifySignature = (req) => {
    )
 }
 
-// Fungsi untuk mengirim pesan WhatsApp
-export const sendMessage = async (phoneNumber, messageText) => {
+export const sendMessage = async (tenantConfig, phoneNumber, messageText) => {
    try {
-      const url = `https://graph.facebook.com/v25.0/${env.phoneNumberId}/messages`
-      
+      const url = `https://graph.facebook.com/v25.0/${tenantConfig.phoneNumberId}/messages`
+
       const payload = {
          messaging_product: 'whatsapp',
          to: phoneNumber,
@@ -80,7 +80,7 @@ export const sendMessage = async (phoneNumber, messageText) => {
       const response = await fetch(url, {
          method: 'POST',
          headers: {
-            'Authorization': `Bearer ${env.akseToken}`,
+            'Authorization': `Bearer ${tenantConfig.whatsappAccessToken}`,
             'Content-Type': 'application/json'
          },
          body: JSON.stringify(payload)
@@ -115,6 +115,10 @@ export const sendMessage = async (phoneNumber, messageText) => {
    }
 }
 
+const getPhoneNumberIdFromValue = (value) => {
+   return value?.metadata?.phone_number_id || null
+}
+
 export const processWebhook = async (body) => {
 
    if (
@@ -125,47 +129,61 @@ export const processWebhook = async (body) => {
    }
 
    try {
-      body.entry.forEach(async (entry) => {
+      const entries = body.entry || []
 
-         entry.changes.forEach(async (change) => {
+      for (const entry of entries) {
+         const changes = entry.changes || []
 
+         for (const change of changes) {
             const value = change.value
+            const phoneNumberId = getPhoneNumberIdFromValue(value)
+
+            if (!phoneNumberId) {
+               console.warn('⚠️ phone_number_id tidak ditemukan di webhook payload')
+               continue
+            }
+
+            const tenantResult = resolveTenantConfig(phoneNumberId)
+            if (!tenantResult.success) {
+               console.error('❌ Tenant config not found:', tenantResult.error)
+               continue
+            }
+
+            const tenantConfig = tenantResult.data
 
             if (
                value.messages &&
                value.messages[0]
             ) {
-
                const message = value.messages[0]
                const contact = value.contacts?.[0]
                const senderName = contact?.profile?.name
 
-               console.log("================ VALUE ================")
+               console.log('================ VALUE ================')
                console.log(value)
-               console.log("================ END VALUE ================")
+               console.log('================ END VALUE ================')
 
                const from = message.from
 
                console.log('\n=== 📨 PESAN MASUK ===')
+               console.log('Tenant:', tenantConfig.tenantKey)
                console.log('Nama:', senderName)
                console.log('Nomor:', from)
+               console.log('phone_number_id:', phoneNumberId)
 
                if (message.type === 'text') {
-
                   const userMessage = message.text.body
                   console.log('Pesan:', userMessage)
 
-                  // 🤖 KIRIM KE AI-RAG
                   console.log('\n⏳ Processing message with AI...')
-                  const aiResponse = await aiService.askAI(from, userMessage)
+                  const aiResponse = await aiService.askAI(tenantConfig, from, userMessage)
 
                   if (aiResponse.success) {
                      console.log('\n✅ AI Response received:')
                      console.log(aiResponse.content)
 
-                     // 📤 KIRIM JAWABAN AI KE WHATSAPP
                      console.log('\n📤 Sending AI response back to WhatsApp...')
-                     const sendResult = await sendMessage(from, aiResponse.content)
+                     const sendResult = await sendMessage(tenantConfig, from, aiResponse.content)
 
                      if (sendResult.success) {
                         console.log('\n✅ AI Response sent successfully to user!')
@@ -175,18 +193,13 @@ export const processWebhook = async (body) => {
                   } else {
                      console.error('\n❌ AI Request failed:', aiResponse.error)
 
-                     // Kirim pesan error ke user
                      const errorMessage = '❌ Maaf, terjadi kesalahan saat memproses pertanyaan. Silakan coba lagi.'
-                     await sendMessage(from, errorMessage)
+                     await sendMessage(tenantConfig, from, errorMessage)
                   }
-
                }
-
             }
-
-         })
-
-      })
+         }
+      }
    } catch (error) {
       console.error('\n❌ ERROR PROCESS WEBHOOK ❌')
       console.error('Error Message:', error.message)
