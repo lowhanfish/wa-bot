@@ -137,12 +137,12 @@ export const processWebhook = async (body) => {
             ) {
 
                const message = value.messages[0]
+               const contact = value.contacts?.[0]
+               const senderName = contact?.profile?.name
 
-               const contact =
-                  value.contacts?.[0]
-
-               const senderName =
-                  contact?.profile?.name
+               console.log("================ VALUE ================")
+               console.log(value)
+               console.log("================ END VALUE ================")
 
                const from = message.from
 
