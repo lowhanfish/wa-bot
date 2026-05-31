@@ -5,7 +5,7 @@
     "whatsappAccessToken": "EAAWVbMRhO1oBRqde2gOAZAv0GFFxQBRC71rUOc7JeWOEID3IwkMoWZANNhqsH6IxuAAAKBZB1LlgnUFPtsaGOyooQ43ZCARiShyYZBPvH2y5NH6AAMzNz7ZAfjU4sYJbLdMtyxhnUUlU98Nz3FV8rOoQET7UaZA1li23DXBVaAKf75mYcRbvb8w024dwvxdW8QhawZDZD",
     "aiUsername": "user@example.com",
     "aiPassword": "password",
-    "aiRagBaseUrl": "http://121.52.72.109:8000"
+    "aiRagBaseUrl": "http://10.10.20.40:8000"
   },
   {
     "tenantKey": "tenant-2",
@@ -13,6 +13,6 @@
     "whatsappAccessToken": "EAAWVbMRhO1oBRqde2gOAZAv0GFFxQBRC71rUOc7JeWOEID3IwkMoWZANNhqsH6IxuAAAKBZB1LlgnUFPtsaGOyooQ43ZCARiShyYZBPvH2y5NH6AAMzNz7ZAfjU4sYJbLdMtyxhnUUlU98Nz3FV8rOoQET7UaZA1li23DXBVaAKf75mYcRbvb8w024dwvxdW8QhawZDZD",
     "aiUsername": "user@example.com",
     "aiPassword": "password",
-    "aiRagBaseUrl": "http://121.52.72.109:8000"
+    "aiRagBaseUrl": "http://10.10.20.40:8000"
   }
 ]

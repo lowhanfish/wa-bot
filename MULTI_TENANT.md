@@ -12,7 +12,7 @@ Contoh isi:
     "whatsappAccessToken": "EAAB...",
     "aiUsername": "user-a",
     "aiPassword": "pass-a",
-    "aiRagBaseUrl": "http://121.52.72.109:8000"
+    "aiRagBaseUrl": "http://10.10.20.40:8000"
   }
 ]
 ```
