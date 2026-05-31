@@ -8,9 +8,17 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const tenantsFilePath = path.resolve(__dirname, '../../tenants.json')
 
+const normalizePhoneNumberId = (value) => {
+   if (value === null || value === undefined) {
+      return null
+   }
+
+   return String(value).trim()
+}
+
 const normalizeTenant = (tenant = {}) => ({
    tenantKey: tenant.tenantKey || tenant.phoneNumberId || tenant.phone_number_id || 'default',
-   phoneNumberId: tenant.phoneNumberId || tenant.phone_number_id || env.phoneNumberId || null,
+   phoneNumberId: normalizePhoneNumberId(tenant.phoneNumberId || tenant.phone_number_id || env.phoneNumberId || null),
    whatsappAccessToken: tenant.whatsappAccessToken || tenant.accessToken || tenant.aksesToken || env.akseToken || null,
    aiRagBaseUrl: tenant.aiRagBaseUrl || env.aiRagBaseUrl,
    aiUsername: tenant.aiUsername || tenant.username || env.aiUsername || null,
@@ -35,7 +43,12 @@ const parseTenantsFromFile = () => {
          return []
       }
 
-      return parsed.map(normalizeTenant).filter((tenant) => tenant.phoneNumberId)
+      const normalizedTenants = parsed.map(normalizeTenant).filter((tenant) => tenant.phoneNumberId)
+      console.log('📦 Loaded tenants:', normalizedTenants.map((tenant) => ({
+         tenantKey: tenant.tenantKey,
+         phoneNumberId: tenant.phoneNumberId
+      })))
+      return normalizedTenants
    } catch (error) {
       console.error('❌ Failed to load tenants.json:', error.message)
       return []
@@ -57,16 +70,18 @@ const legacyTenant = normalizeTenant({
 })
 
 const getTenantByPhoneNumberId = (phoneNumberId) => {
-   if (!phoneNumberId) {
+   const normalizedPhoneNumberId = normalizePhoneNumberId(phoneNumberId)
+
+   if (!normalizedPhoneNumberId) {
       return null
    }
 
-   const matchedTenant = tenantList.find((tenant) => tenant.phoneNumberId === phoneNumberId)
+   const matchedTenant = tenantList.find((tenant) => tenant.phoneNumberId === normalizedPhoneNumberId)
    if (matchedTenant) {
       return matchedTenant
    }
 
-   if (legacyTenant.phoneNumberId === phoneNumberId) {
+   if (legacyTenant.phoneNumberId === normalizedPhoneNumberId) {
       return legacyTenant
    }
 

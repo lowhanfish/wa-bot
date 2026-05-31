@@ -2,7 +2,7 @@ import crypto from 'crypto'
 
 import env from '../../config/env.js'
 import * as aiService from '../../services/aiService.js'
-import { resolveTenantConfig } from '../../services/tenantService.js'
+import { getAllTenantConfigs, resolveTenantConfig } from '../../services/tenantService.js'
 
 export const verifyWebhook = (req) => {
 
@@ -143,9 +143,15 @@ export const processWebhook = async (body) => {
                continue
             }
 
+            console.log('🔎 Incoming phone_number_id:', phoneNumberId)
+
             const tenantResult = resolveTenantConfig(phoneNumberId)
             if (!tenantResult.success) {
                console.error('❌ Tenant config not found:', tenantResult.error)
+               console.error('📋 Available tenant ids:', JSON.stringify(getAllTenantConfigs().map((tenant) => ({
+                  tenantKey: tenant.tenantKey,
+                  phoneNumberId: tenant.phoneNumberId
+               }))))
                continue
             }
 
